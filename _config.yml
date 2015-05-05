@@ -1,0 +1,15 @@
+name: David Robson's Blog
+description: Thoughts, opinions and software talk.
+meta_description: "Thoughts, opinions and software talk."
+
+markdown: redcarpet
+highlighter: pygments
+logo: false
+paginate: 15
+baseurl: /
+domain_name: 'http://davidrobson.co.uk'
+google_analytics: 'UA-XXXXXXXX-X'
+
+# Details for the RSS feed generator
+url:            'http://davidrobson.co.uk'
+author:         'David Robson'
