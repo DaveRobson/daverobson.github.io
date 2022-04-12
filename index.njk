@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>David Robson</title>
+    <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+    <section class="hero mb-6">
+        <div class="hero-body">
+            <p class="title">
+                David Robson
+            </p>
+            <p class="subtitle">
+                Thoughts, opinions and slowly going insane
+            </p>
+        </div>
+    </section>
+
+    <section class="hero pt-6">
+        <div class="container">
+            <h1 class="title">
+                Ramblings
+            </h1>
+        </div>
+    </section>
+
+
+    {%- for post in collections.post.reverse() -%}
+    <section class="section">
+        <div class="container">
+            <h1 class="title is-4 post-title">
+                <a href="{{ post.url }}">{{ post.data.title }}</a>
+            </h1>
+            <p class="subtitle is-6">
+                {{ post.data.subtitle }}
+            </p>
+        </div>
+    </section>
+
+    {% if not loop.last %}
+    <div class="container">
+        <hr/>
+    </div>
+    {% endif %}
+
+    {%- endfor -%}
+</body>
+</html>

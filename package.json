@@ -1,0 +1,14 @@
+{
+  "name": "daverobson.github.io",
+  "version": "1.0.0",
+  "description": "My personal site",
+  "scripts": {
+    "build": "env NODE_ENV=production npx eleventy --pathprefix 'eleventy-gh-demo'"
+  },
+  "keywords": [],
+  "author": "David Robson",
+  "license": "MIT",
+  "devDependencies": {
+    "@11ty/eleventy": "^1.0.0"
+  }
+}

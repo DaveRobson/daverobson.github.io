@@ -1,0 +1,54 @@
+---
+title: David Robson
+labels: Java, Jersey, and Restful
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>David Robson</title>
+    <link rel="stylesheet" href="/public/style.css">
+    <link rel="stylesheet" href="/public/dracula.css">
+    <script src="https://kit.fontawesome.com/a2b0576607.js" crossorigin="anonymous"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<nav class="navbar is-transparent is-spaced">
+    <div id="navbarExampleTransparentExample" class="navbar-menu">
+        <div class="navbar-start">
+            <div class="navbar-item">
+                <div class="field is-grouped">
+                    <p class="control">
+                        <a class="bd-tw-button button" href="/">
+                                <span class="icon">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </span>
+                            <span>
+                                    Home
+                                </span>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<section class="hero is-large">
+    <div class="container">
+        <h1 class="title">
+            {{ title }}
+        </h1>
+        <p class="subtitle is-6">
+            {{ page.date.toLocaleString() }} on {{ categories }}
+        </p>
+    </div>
+</section>
+<section class="section post-content">
+    <div class="container">
+        {{ content | safe }}
+    </div>
+</section>
+</body>
+</html>
