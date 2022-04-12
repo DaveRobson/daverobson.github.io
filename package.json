@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "My personal site",
   "scripts": {
-    "build": "env NODE_ENV=production npx eleventy --pathprefix 'eleventy-gh-demo'"
+    "build": "npx eleventy"
   },
   "keywords": [],
   "author": "David Robson",
