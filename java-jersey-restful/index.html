@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>David Robson</title>
+    <link rel="stylesheet" href="/public/style.css">
+    <link rel="stylesheet" href="/public/dracula.css">
+    <script src="https://kit.fontawesome.com/a2b0576607.js" crossorigin="anonymous"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<nav class="navbar is-transparent is-spaced">
+    <div id="navbarExampleTransparentExample" class="navbar-menu">
+        <div class="navbar-start">
+            <div class="navbar-item">
+                <div class="field is-grouped">
+                    <p class="control">
+                        <a class="bd-tw-button button" href="/">
+                                <span class="icon">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </span>
+                            <span>
+                                    Home
+                                </span>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<section class="hero is-large">
+    <div class="container">
+        <h1 class="title">
+            Web Dev Backend - Jersey &amp; Guice
+        </h1>
+        <p class="subtitle is-6">
+            2/23/2015, 10:18:00 AM on Java, Jersey, and Restful
+        </p>
+    </div>
+</section>
+<section class="section post-content">
+    <div class="container">
+        <p>This is the beginning in a series of posts which I hope will culminate in a complete Web Application with a JS Frontend, Java Backend and Database.</p>
+<p>So building a backend, not just any backend but a Java Restful Web Service backend and a little bit of Dependency Injection thrown in.</p>
+<p><strong>The technologies:</strong></p>
+<ul>
+<li>Google Guice</li>
+<li>Jersey</li>
+<li>Maven</li>
+<li>Tomcat</li>
+</ul>
+<h2>Getting Started</h2>
+<p>Like starting any project you want to be up and running as quickly as possible. So using a maven archetype quickly generates the file structure and pom.xml. For this project a basic quick start archetype will work nicely.</p>
+<pre><code class="language-bash">
+mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-quickstart
+
+</code></pre>
+<p>Running the above on the terminal will kick off maven to download everything it needs and start creating the project structure, it'll also ask you a few questions like what your project name and group id is.</p>
+<p>When maven completes you'll be left with a project folder containing your new java project. The project wont have a lot in it but what it does have is:</p>
+<ul>
+<li>src/main/java - where all the application code goes.</li>
+<li>src/test/java - where all the test code goes.</li>
+<li>pom.xml - dependency and build configuration file.</li>
+</ul>
+<p>It's basic maven, so I wont go into any detail but the <a href="http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html">maven site</a> has some great documentation.</p>
+<h2>Extra Dependenices</h2>
+<p>To start writing some code you first need to get some extra libraries for Guice, Jersey and Javax Servlet. All the libraries are added to the pom.xml in between the dependencies tag.</p>
+<pre><code class="language-xml">&lt;properties&gt;
+    &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+    &lt;project.jersey.version&gt;1.18.3&lt;/project.jersey.version&gt;
+&lt;/properties&gt;
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.google.inject.extensions&lt;/groupId&gt;
+        &lt;artifactId&gt;guice-servlet&lt;/artifactId&gt;
+        &lt;version&gt;4.0-beta&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+      &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+      &lt;artifactId&gt;servlet-api&lt;/artifactId&gt;
+      &lt;version&gt;2.5&lt;/version&gt;
+      &lt;scope&gt;provided&lt;/scope&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+      &lt;groupId&gt;javax.ws.rs&lt;/groupId&gt;
+      &lt;artifactId&gt;jsr311-api&lt;/artifactId&gt;
+      &lt;version&gt;1.1.1&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.sun.jersey&lt;/groupId&gt;
+      &lt;artifactId&gt;jersey-servlet&lt;/artifactId&gt;
+      &lt;version&gt;${project.jersey.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.sun.jersey&lt;/groupId&gt;
+      &lt;artifactId&gt;jersey-json&lt;/artifactId&gt;
+      &lt;version&gt;${project.jersey.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.sun.jersey.contribs&lt;/groupId&gt;
+      &lt;artifactId&gt;jersey-guice&lt;/artifactId&gt;
+      &lt;version&gt;${project.jersey.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.sun.jersey.contribs&lt;/groupId&gt;
+      &lt;artifactId&gt;jersey-multipart&lt;/artifactId&gt;
+      &lt;version&gt;${project.jersey.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre>
+<p>So what are all these libraries for?</p>
+<p><strong>Google Guice</strong> - Allows us to build the application code using the <a href="http://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> software pattern and Guice specifically has a few handy features.</p>
+<p><strong>Javax Servlet</strong> - Standard Java library for building Java classes, named Servlets, to handle http requests.</p>
+<p><strong>Jersey</strong> - A framework for building Restful webservices.</p>
+<h2>Lets Code Something</h2>
+<p>We need something to be the main starting point for the app, I've called it <strong>AppServlet</strong>. But really you can call it whatever you want just make it meaningful, java isn't called a verbose language for nothing!</p>
+<h3>AppServlet</h3>
+<p>Create AppServlet in the root package e.g. com.davidrobson. This first class sets up Guice and defines which Java objects should be included in Guice's dependency injection (DI) world of happiness.</p>
+<pre><code class="language-java">package com.davidrobson;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.servlet.GuiceServletContextListener;
+
+public class AppServlet extends GuiceServletContextListener {
+    @Override
+    protected Injector getInjector() {
+        return Guice.createInjector(new RestModule());
+    }
+}
+</code></pre>
+<p>By extending <strong>GuiceServletContextListener</strong> and overriding the getInjector method you can add an object to the DI container. From the example you can see <strong>RestModule</strong> being passed as an argument to the Guice.createInjector() method. This now makes it available via DI. Pretty easy right!? To add mulitple objects simply pass them comma sperated into the same Guice.createInjector() method.</p>
+<p>One thing is that the objects being past to Guice.createInjector() must extend Guice's ServletModule object.</p>
+<h3>RestModule</h3>
+<p>But wait your probably thinking where did RestModule come from!? and what is it? RestModule, in the root package, is a class that contains configuration needed for the application's restful endpoints.</p>
+<pre><code class="language-java">
+package com.davidrobson;
+
+import com.google.inject.servlet.ServletModule;
+import com.sun.jersey.api.core.PackagesResourceConfig;
+import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+
+import java.util.HashMap;
+
+public class RestModule extends ServletModule {
+
+    @Override
+    protected void configureServlets() {
+
+        HashMap&lt;String, String&gt; params = new HashMap&lt;String, String&gt;();
+        params.put(PackagesResourceConfig.PROPERTY_PACKAGES, &quot;com.davidrobson.wsao&quot;);
+        params.put(JSONConfiguration.FEATURE_POJO_MAPPING, &quot;true&quot;);
+        params.put(ResourceConfig.FEATURE_DISABLE_WADL, &quot;true&quot;);
+
+        serve(&quot;/api/*&quot;).with(GuiceContainer.class, params);
+    }
+}
+</code></pre>
+<p>Theres a few cool parts to RestModule. The first is the params were adding to the HashMap. It's the first bit of Jersey code. What its doing is configuring a property (PackagesResourceConfig.PROPERTY_PACKAGES) which defines all the packages of the project we want scan for objects to add to DI, in this case its the com.davidrobson.wsao package. So com.davidrobson.wsao is a package we haven't created yet but it'll contain all the restful endpoints and I'll explain about it in more detail later. The other bit of param configuration to take note of is JSONConfiguration.FEATURE_POJO_MAPPING, it allows the restful endpoints to automatically convert json to pojo and vice versa.</p>
+<p>The other cool thing is Guice's serve() method. serve(&quot;/api/*&quot;) defines the url on which we want to respond to http requests. While with(GuiceContainer.class, params) defines what classes will respond. Putting it altogether RestModule is saying we want to respond to any requests on the <strong>/api</strong> url with the classes in com.davidrobson.wsao.</p>
+<p>By setting up the endpoints in this way they are also available via DI.</p>
+<h3>Structuring</h3>
+<p>In the previous examples you can see how simple it is to add objects to DI and to do http routing. Now its time to think a tiny bit about structuring of the code. For purpose of this post I could throw the code in all over the place and be done with it, but this is a project I want to build on top of. So stucturing it nicely is important.</p>
+<p>Adding two new packages will help keep everything tidy, domain and wsao. The domain package is good for containing pojos representing anything that could used in multiple areas of the code but only holds a small amount of data. Like a User object. The wsao, Web Service Access Object, package is where all the classes defining the restful endpoints are stored.</p>
+<p><img src="/public/images/project-structure.png" alt="Project Structure"></p>
+<p>As an application grows it can be very easy to forgot about structuring the code and it quickly turns to spaghetti. By doing a little now it can help a lot in the future but thats just my opinion. If you have structure or pattern you follow and is successful run with it.</p>
+<h3>User</h3>
+<p>Just a very simple pojo that will hold our user data.</p>
+<pre><code class="language-java">package com.davidrobson.domain;
+
+public class User {
+
+    private String firstname;
+    private String lastname;
+    private String email;
+
+    public User(String firstname, String lastname, String email) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+    }
+
+    //Getters and Setters
+}
+</code></pre>
+<h3>UserWsao</h3>
+<pre><code class="language-java">package com.davidrobson.wsao;
+
+import com.davidrobson.domain.User;
+
+public interface UserWsao {
+    public User getUser();
+}
+</code></pre>
+<p>Just a very simple interface, in the com.davidrobson.wsao package, providing structure for the UserWsaoImpl class.</p>
+<h3>UserWsaoImpl</h3>
+<p>The first class inside of com.davidrobson.wsao.</p>
+<pre><code class="language-java">package com.davidrobson.wsao;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+
+@Path(&quot;/user&quot;)
+public class UserWsaoImpl implements UserWsao {
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Override
+    public User getUser() {
+        return new User(&quot;David&quot;, &quot;Robson&quot;, &quot;david@davidrobson.co.uk&quot;);
+    }
+}
+</code></pre>
+<p>So a few new bits are being introduced here. First of all I lied about all the classes in the wsao package automatically being added to DI. I know shock horror, earth shattering, world crumbling!! When Jersey scans the package its actually checking for classes with the @Path annotaton. Why I hear you shout, well why add everything when we only want endpoints!? In this case the @Path annotation serves a double purpose. It identifies its self to be added to DI and defines the url on which the class responds to.</p>
+<h2>Web.xml</h2>
+<p>The next step is to create the web.xml, which defines what handles the http requests received by the application.</p>
+<p>First create a webapp/WEB-INF folder which needs to be created in src/main. The web.xml is then placed in WEB-INF.</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;web-app version=&quot;2.5&quot; xmlns=&quot;http://java.sun.com/xml/ns/javaee&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd&quot;&gt;
+
+    &lt;filter&gt;
+        &lt;filter-name&gt;guiceFilter&lt;/filter-name&gt;
+        &lt;filter-class&gt;com.google.inject.servlet.GuiceFilter&lt;/filter-class&gt;
+    &lt;/filter&gt;
+
+    &lt;filter-mapping&gt;
+        &lt;filter-name&gt;guiceFilter&lt;/filter-name&gt;
+        &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+    &lt;/filter-mapping&gt;
+
+    &lt;listener&gt;
+        &lt;listener-class&gt;com.davidrobson.AppServlet&lt;/listener-class&gt;
+    &lt;/listener&gt;
+&lt;/web-app&gt;
+</code></pre>
+<p>Our web.xml contains two main elements. First a mapping to direct all http requests through the GuiceFilter, enabling DI. Second defining an event listener. A class listening for two specific Servlet events (initialization and destruction), basically the application starting and stopping. For us thats the AppServlet.</p>
+<h2>Running The App</h2>
+<p>Everything is now in place to run and test the app. First the code needs to be compiled and a WAR file generated. This is done by running a few maven goals, clean and verify, on the terminal in the root of the project.</p>
+<p><img src="/public/images/running-app.png" alt="mvn build"></p>
+<p>You'll see maven go off and find the projects' dependencies, compiling the code and generating the WAR, placing it in the target folder.</p>
+<h3>Deploy</h3>
+<p>With the WAR created it can be deployed to any application server that supports Servlet 2.5 or above, e.g. Jboss/WildFly, Tomcat, GlassFish, Jetty, ...</p>
+<p>For simplicity, adding a Jetty server via a maven plugin is nice option.</p>
+<p>Add the plugin to the bottom of the pom.xml.</p>
+<pre><code class="language-xml">&lt;project&gt;
+.........
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
+                &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
+                &lt;version&gt;${jettyVersion}&lt;/version&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+&lt;/project&gt;
+</code></pre>
+<p>Finally its ready to deploy and run. Using the same build command as before, maven will download the new jetty plugin. jetty:run is then used to run the jetty server and automatically deploy the app.</p>
+<pre><code class="language-bash">
+mvn clean verify &amp;&amp; mvn jetty:run
+
+</code></pre>
+<p>The app will be running on port 8080 and if you send a get request to /api/user it'll respond with the user object in json. You can also just check it out in your browser <a href="http://localhost:8080/api/user">Get User</a>. To stop the server use ctrl+c on the terminal.</p>
+<p><img src="/public/images/json-response.png" alt="Json Response"></p>
+<h2>Conclusion</h2>
+<p>This is a very basic start to a Java backend but serves as a great foundation to build on. Next steps would be to start expanding the api adding in a service layer and connect in a database.</p>
+<p>Thank you for taking the time to read this article and I hope you've found it useful. If you have any questions either Tweet Me <a href="https://twitter.com/daviderobson">@DavidERobson</a> or leave a comment and i'll try and get back to you!</p>
+<p>All the code is hosted on Github https://github.com/DaveRobson/post-restful-ws</p>
+
+    </div>
+</section>
+</body>
+</html>

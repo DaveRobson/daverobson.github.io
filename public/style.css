@@ -1,0 +1,35 @@
+@import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css";
+@import "https://unpkg.com/bulma-prefers-dark";
+
+.post-summary {
+    padding-bottom: 20px;
+    border-bottom: #EBF2F6 1px solid;
+}
+
+.post-title a {
+    color: #dbdbdb;
+}
+
+pre {
+    background-color: #17181c;
+    padding: unset;
+}
+
+.post-content blockquote, .post-content dd, .post-content dl, .post-content dt, .post-content figure, .post-content h1,
+.post-content h2, .post-content h3, .post-content h4, .post-content h5, .post-content h6, .post-content li, .post-content ol,
+.post-content p, .post-content ul {
+    margin: revert;
+    padding: revert;
+    font-size: revert;
+    font-weight: revert;
+}
+
+
+.post-content p, .post-content ul, .post-content ol, .post-content dl, .post-content pre {
+    margin: 0 0 1.75em 0;
+}
+
+.post-content li {
+    list-style: initial;
+}
+
